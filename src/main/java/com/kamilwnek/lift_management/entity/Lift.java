@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @NoArgsConstructor
@@ -24,16 +25,20 @@ public class Lift {
             generator = "lift_seq"
     )
     private Long id;
+    @Column(nullable = false)
     private Long objectId;
+    @Column(nullable = false)
     private String serialNumber;
-    private String UDTNumber;
-    private Date activationDate;
+    @Column(nullable = false)
+    private String udtNumber;
+    @Column(nullable = false)
+    private String activationDate;
     private String comment;
 
-    public Lift(Long objectId, String serialNumber, String UDTNumber, Date activationDate, String comment) {
+    public Lift(Long objectId, String serialNumber, String udtNumber, String activationDate, String comment) {
         this.objectId = objectId;
         this.serialNumber = serialNumber;
-        this.UDTNumber = UDTNumber;
+        this.udtNumber = udtNumber;
         this.activationDate = activationDate;
         this.comment = comment;
     }
