@@ -1,4 +1,4 @@
-package com.kamilwnek.liftManagement;
+package com.kamilwnek.lift_management;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -1,4 +1,4 @@
-package com.kamilwnek.liftManagement;
+package com.kamilwnek.lift_management;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
