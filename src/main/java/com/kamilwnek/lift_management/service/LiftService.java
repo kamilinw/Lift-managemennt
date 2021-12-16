@@ -15,7 +15,7 @@ public class LiftService {
 
     public Lift createLift(CreateLiftRequest liftRequest) {
         Lift lift = new Lift(
-                liftRequest.getObjectId(),
+                liftRequest.getBuilding(),
                 liftRequest.getSerialNumber(),
                 liftRequest.getUdtNumber(),
                 liftRequest.getActivationDate(),
