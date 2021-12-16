@@ -5,13 +5,11 @@ import com.kamilwnek.lift_management.entity.Lift;
 import com.kamilwnek.lift_management.service.LiftService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
+import java.util.NoSuchElementException;
 
 @AllArgsConstructor
 @RestController
@@ -26,7 +24,13 @@ public class LiftController {
         } catch (IllegalArgumentException e){
             System.out.println(e.getMessage());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad request", e);
+        } catch (NoSuchElementException elementException){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No building with this id", elementException);
         }
+    }
 
+    @GetMapping(value = "/{id}")
+    public Lift getLiftById(@PathVariable(name = "id") Long id){
+        return liftService.getLiftById(id);
     }
 }
