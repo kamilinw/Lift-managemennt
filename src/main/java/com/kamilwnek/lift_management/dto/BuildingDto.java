@@ -3,14 +3,17 @@ package com.kamilwnek.lift_management.dto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
 
 import javax.validation.constraints.NotNull;
 
 @AllArgsConstructor
 @Getter
 @Setter
-public class CreateBuildingRequest {
+public class BuildingDto {
 
+    @Id
+    private Long id;
     @NotNull
     private String name;
     @NotNull

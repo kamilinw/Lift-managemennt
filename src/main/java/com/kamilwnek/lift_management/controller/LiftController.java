@@ -1,6 +1,6 @@
 package com.kamilwnek.lift_management.controller;
 
-import com.kamilwnek.lift_management.dto.CreateLiftRequest;
+import com.kamilwnek.lift_management.dto.LiftDto;
 import com.kamilwnek.lift_management.entity.Lift;
 import com.kamilwnek.lift_management.service.LiftService;
 import lombok.AllArgsConstructor;
@@ -18,11 +18,10 @@ public class LiftController {
     private final LiftService liftService;
 
     @PostMapping(value = "/add")
-    public Lift createLift(@RequestBody @Valid CreateLiftRequest liftRequest){
+    public LiftDto createLift(@RequestBody @Valid LiftDto liftRequest){
         try{
             return liftService.createLift(liftRequest);
         } catch (IllegalArgumentException e){
-            System.out.println(e.getMessage());
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Bad request", e);
         } catch (NoSuchElementException elementException){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "No building with this id", elementException);

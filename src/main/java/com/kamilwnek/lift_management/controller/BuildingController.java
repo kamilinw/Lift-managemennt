@@ -1,6 +1,6 @@
 package com.kamilwnek.lift_management.controller;
 
-import com.kamilwnek.lift_management.dto.CreateBuildingRequest;
+import com.kamilwnek.lift_management.dto.BuildingDto;
 import com.kamilwnek.lift_management.entity.Building;
 import com.kamilwnek.lift_management.service.BuildingService;
 import lombok.AllArgsConstructor;
@@ -19,7 +19,7 @@ public class BuildingController {
     private final BuildingService buildingService;
 
     @PostMapping(path = "/add")
-    public Building createBuilding(@RequestBody @Valid CreateBuildingRequest buildingRequest){
+    public Building createBuilding(@RequestBody @Valid BuildingDto buildingRequest){
         return buildingService.createBuilding(buildingRequest);
     }
 }
