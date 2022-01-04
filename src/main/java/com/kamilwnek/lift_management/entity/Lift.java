@@ -25,9 +25,12 @@ public class Lift {
             generator = "lift_seq"
     )
     private Long id;
-    @ManyToOne
+
+    @ManyToOne(
+            cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH},
+            targetEntity = Building.class
+    )
     @JoinColumn(
-            nullable = false,
             name = "building_id"
     )
     private Building building;

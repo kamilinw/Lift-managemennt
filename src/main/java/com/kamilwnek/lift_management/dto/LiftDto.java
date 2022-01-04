@@ -1,7 +1,5 @@
 package com.kamilwnek.lift_management.dto;
 
-
-import com.kamilwnek.lift_management.entity.Building;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,7 +15,7 @@ public class LiftDto {
     @Id
     private Long id;
     @NotNull(message = "Building id nie moze być puste!")
-    private Building building;
+    private BuildingDto buildingDto;
     @NotNull
     private String serialNumber;
     @NotNull

@@ -1,11 +1,14 @@
 package com.kamilwnek.lift_management.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.List;
+import java.util.Set;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,6 +29,18 @@ public class Building {
     private String name;
     private String city;
     private String address;
+    @OneToMany(
+            mappedBy = "building"
+    )
+    @JsonIgnore
+    private Set<Lift> lifts;
+
+    public Building(Long id, String name, String city, String address) {
+        this.id = id;
+        this.name = name;
+        this.city = city;
+        this.address = address;
+    }
 
     public Building(String name, String city, String address) {
         this.name = name;
