@@ -47,4 +47,12 @@ public class LiftService {
         else
             throw new NoSuchRecordException(String.format("Lift with id %d not found", id));
     }
+
+    public Lift findLiftByUdtNumber(String udtNumber) {
+        return liftRepository.findLiftByUdtNumber(udtNumber);
+    }
+
+    public Lift findLiftBySerialNumber(String serialNumber) {
+        return liftRepository.findLiftBySerialNumber(serialNumber);
+    }
 }

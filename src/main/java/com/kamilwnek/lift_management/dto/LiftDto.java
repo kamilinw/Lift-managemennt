@@ -1,5 +1,7 @@
 package com.kamilwnek.lift_management.dto;
 
+import com.kamilwnek.lift_management.validator.UniqueSerialNumber;
+import com.kamilwnek.lift_management.validator.UniqueUdtNumber;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,8 +19,10 @@ public class LiftDto {
     @NotNull(message = "Building id nie moze być puste!")
     private BuildingDto buildingDto;
     @NotNull
+    @UniqueSerialNumber
     private String serialNumber;
     @NotNull
+    @UniqueUdtNumber
     private String udtNumber;
     @NotNull
     private String activationDate;
