@@ -3,7 +3,7 @@ package com.kamilwnek.lift_management.controller;
 import com.kamilwnek.lift_management.dto.LiftDto;
 import com.kamilwnek.lift_management.entity.Lift;
 import com.kamilwnek.lift_management.service.LiftService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -11,7 +11,7 @@ import org.springframework.web.server.ResponseStatusException;
 import javax.validation.Valid;
 import java.util.NoSuchElementException;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("v1/api/lift")
 public class LiftController {
