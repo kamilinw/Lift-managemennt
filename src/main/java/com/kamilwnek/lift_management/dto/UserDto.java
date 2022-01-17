@@ -2,20 +2,20 @@ package com.kamilwnek.lift_management.dto;
 
 import com.kamilwnek.lift_management.enums.ApplicationUserRole;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.time.LocalDateTime;
 
-@Data
+@Setter
+@Getter
 @AllArgsConstructor
-public class LoginResponse {
+public class UserDto {
 
-    Long id;
+    private Long id;
     private LocalDateTime createdAt;
     private LocalDateTime modifiedAt;
     private String username;
     private String email;
     private ApplicationUserRole applicationUserRole;
-    String accessToken;
-    String refreshToken;
-    String tokenType;
 }

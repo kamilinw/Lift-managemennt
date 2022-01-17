@@ -1,13 +1,12 @@
 package com.kamilwnek.lift_management.service;
 
-import com.kamilwnek.lift_management.dto.CreateUserRequest;
-import com.kamilwnek.lift_management.dto.CreateUserResponse;
-import com.kamilwnek.lift_management.dto.LoginRequest;
-import com.kamilwnek.lift_management.dto.LoginResponse;
+import com.kamilwnek.lift_management.dto.*;
+import com.kamilwnek.lift_management.entity.RefreshToken;
 import com.kamilwnek.lift_management.entity.User;
 import com.kamilwnek.lift_management.exception.NoSuchRecordException;
 import com.kamilwnek.lift_management.mapper.CreateUserRequestMapper;
 import com.kamilwnek.lift_management.mapper.CreateUserResponseMapper;
+import com.kamilwnek.lift_management.mapper.UserMapper;
 import com.kamilwnek.lift_management.repository.UserRepository;
 import com.kamilwnek.lift_management.security.ApplicationSecurityConfig;
 import com.kamilwnek.lift_management.security.JwtAccessTokenUtil;
@@ -17,6 +16,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -33,6 +33,8 @@ public class UserService implements UserDetailsService {
     private final CreateUserRequestMapper createUserRequestMapper;
     private final CreateUserResponseMapper createUserResponseMapper;
     private final JwtAccessTokenUtil jwtAccessTokenUtil;
+    private final RefreshTokenService refreshTokenService;
+    private final UserMapper userMapper;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -51,11 +53,31 @@ public class UserService implements UserDetailsService {
         return createUserResponseMapper.toDto(user);
     }
 
-    public LoginResponse loginUser(LoginRequest request) {
-        Authentication authenticate = authenticationManager
+    public LoginResponse loginUser(LoginRequest request, String device) {
+        Authentication authentication = authenticationManager
                 .authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
-        User userDetails = (User) authenticate.getPrincipal();
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        User userDetails = (User) authentication.getPrincipal();
 
-        return new LoginResponse(jwtAccessTokenUtil.createAccessToken(userDetails),"Refresh Token");
+        RefreshToken refreshToken = refreshTokenService.createToken(userDetails, device);
+
+        return new LoginResponse(
+                userDetails.getId(),
+                userDetails.getCreatedAt(),
+                userDetails.getModifiedAt(),
+                userDetails.getUsername(),
+                userDetails.getEmail(),
+                userDetails.getApplicationUserRole(),
+                jwtAccessTokenUtil.createAccessToken(userDetails),
+                refreshToken.getToken(),
+                "Bearer"
+        );
+    }
+
+    public UserDto getUserById(Long id) {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new NoSuchRecordException(String.format("User with id %s not found!", id))
+        );
+        return userMapper.toDto(user);
     }
 }

@@ -1,5 +1,6 @@
 package com.kamilwnek.lift_management.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kamilwnek.lift_management.enums.ApplicationUserRole;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,7 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Set;
 
 @Data
 @Entity
@@ -50,8 +52,13 @@ public class User implements UserDetails, Serializable {
     private ApplicationUserRole applicationUserRole;
 
     @NotNull
-
     private boolean isEnabled;
+
+    @OneToMany(
+            mappedBy = "user"
+    )
+    @JsonIgnore
+    private Set<RefreshToken> refreshTokens;
 
     public User(@NotNull String username, @NotNull String password, @NotNull String email) {
         this.username = username;
