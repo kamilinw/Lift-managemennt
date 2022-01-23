@@ -65,7 +65,7 @@ public class User implements UserDetails, Serializable {
         this.password = password;
         this.email = email;
         this.isEnabled = true;
-        this.applicationUserRole = ApplicationUserRole.USER;
+        this.applicationUserRole = ApplicationUserRole.EMPLOYEE;
     }
 
     @Override

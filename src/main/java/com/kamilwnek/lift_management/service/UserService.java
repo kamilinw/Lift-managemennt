@@ -8,11 +8,7 @@ import com.kamilwnek.lift_management.mapper.CreateUserRequestMapper;
 import com.kamilwnek.lift_management.mapper.CreateUserResponseMapper;
 import com.kamilwnek.lift_management.mapper.UserMapper;
 import com.kamilwnek.lift_management.repository.UserRepository;
-import com.kamilwnek.lift_management.security.ApplicationSecurityConfig;
-import com.kamilwnek.lift_management.security.JwtAccessTokenUtil;
 import lombok.AllArgsConstructor;
-import org.apache.catalina.security.SecurityConfig;
-import org.springframework.context.annotation.Import;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,7 +17,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
 import javax.validation.ValidationException;
 
 @Service
@@ -32,7 +27,6 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final CreateUserRequestMapper createUserRequestMapper;
     private final CreateUserResponseMapper createUserResponseMapper;
-    private final JwtAccessTokenUtil jwtAccessTokenUtil;
     private final RefreshTokenService refreshTokenService;
     private final UserMapper userMapper;
 
@@ -54,24 +48,17 @@ public class UserService implements UserDetailsService {
     }
 
     public LoginResponse loginUser(LoginRequest request, String device) {
-        Authentication authentication = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
+        Authentication authentication;
+        authentication = authenticationManager
+                .authenticate(
+                        new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
+                );
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
         User userDetails = (User) authentication.getPrincipal();
-
         RefreshToken refreshToken = refreshTokenService.createToken(userDetails, device);
 
-        return new LoginResponse(
-                userDetails.getId(),
-                userDetails.getCreatedAt(),
-                userDetails.getModifiedAt(),
-                userDetails.getUsername(),
-                userDetails.getEmail(),
-                userDetails.getApplicationUserRole(),
-                jwtAccessTokenUtil.createAccessToken(userDetails),
-                refreshToken.getToken(),
-                "Bearer"
-        );
+        return userMapper.toLoginResponse(userDetails, refreshToken);
     }
 
     public UserDto getUserById(Long id) {

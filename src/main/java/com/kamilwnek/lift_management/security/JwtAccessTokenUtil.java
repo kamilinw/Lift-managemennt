@@ -5,6 +5,8 @@ import com.kamilwnek.lift_management.exception.JwtTokenException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
@@ -15,6 +17,8 @@ import java.util.Date;
 public class JwtAccessTokenUtil {
     private final JwtConfig jwtConfig;
     private final JwtSecretKey jwtSecretKey;
+
+    private final Logger logger = LoggerFactory.getLogger(JwtAccessTokenUtil.class);
 
     public String createAccessToken(User user){
         return Jwts.builder()
@@ -42,7 +46,7 @@ public class JwtAccessTokenUtil {
         return claims.getBody().getExpiration();
     }
 
-    public boolean validate(String token) {
+    public boolean validate(String token) throws JwtTokenException {
         try {
             Jwts.parserBuilder().setSigningKey(jwtSecretKey.secretKey()).build().parseClaimsJws(token);
             return true;

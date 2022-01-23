@@ -1,17 +1,16 @@
 package com.kamilwnek.lift_management.security;
 
-import com.kamilwnek.lift_management.repository.UserRepository;
+import com.kamilwnek.lift_management.exception.JwtTokenException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -50,10 +49,13 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         }
 
         final String token = header.split(" ")[1].trim();
-        if (!jwtAccessTokenUtil.validate(token)) {
+        try {
+            jwtAccessTokenUtil.validate(token);
+        } catch (JwtTokenException e){
             filterChain.doFilter(request, response);
             return;
         }
+
 
         Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(jwtSecretKey.secretKey()).build().parseClaimsJws(token);
         List<Map<String,String>> authoritiesList = (List<Map<String,String>>) claims.getBody().get(AUTHORITIES);

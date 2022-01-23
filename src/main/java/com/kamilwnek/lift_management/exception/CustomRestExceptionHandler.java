@@ -3,10 +3,10 @@ package com.kamilwnek.lift_management.exception;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
@@ -35,9 +35,28 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
                 .collect(Collectors.toList()));
 
         ApiError apiError =
-                new ApiError(HttpStatus.BAD_REQUEST, "", errors);
+                new ApiError(HttpStatus.BAD_REQUEST, "", errors, request.getContextPath());
         return handleExceptionInternal(
                 ex, apiError, headers, apiError.getStatus(), request);
     }
 
+    @ExceptionHandler(value = NoSuchRecordException.class)
+    protected ResponseEntity<Object> handleNoSuchRecordException(
+            RuntimeException ex, WebRequest request) {
+
+        ApiError apiError =
+                new ApiError(HttpStatus.NOT_FOUND, "", ex.getMessage(), request.getContextPath());
+
+        return handleExceptionInternal(ex, apiError, new HttpHeaders(), apiError.getStatus(), request);
+    }
+
+    @ExceptionHandler(value = {BadCredentialsException.class, JwtTokenException.class})
+    protected ResponseEntity<Object> handleAuthException(
+            RuntimeException ex, WebRequest request) {
+
+        ApiError apiError =
+                new ApiError(HttpStatus.FORBIDDEN, "", ex.getMessage(), request.getContextPath());
+
+        return handleExceptionInternal(ex, apiError, new HttpHeaders(), apiError.getStatus(), request);
+    }
 }

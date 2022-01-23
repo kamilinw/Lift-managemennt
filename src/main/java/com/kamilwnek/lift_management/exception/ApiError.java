@@ -13,12 +13,14 @@ public class ApiError {
     private HttpStatus status;
     private String message;
     private List<String> errors;
+    private String path;
 
 
-    public ApiError(HttpStatus status, String message, String error) {
+    public ApiError(HttpStatus status, String message, String error, String path) {
         super();
         this.status = status;
         this.message = message;
+        this.path = path;
         errors = Collections.singletonList(error);
     }
 }

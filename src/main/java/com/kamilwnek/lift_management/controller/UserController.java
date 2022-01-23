@@ -2,7 +2,6 @@ package com.kamilwnek.lift_management.controller;
 
 import com.google.common.net.HttpHeaders;
 import com.kamilwnek.lift_management.dto.*;
-import com.kamilwnek.lift_management.entity.Lift;
 import com.kamilwnek.lift_management.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
