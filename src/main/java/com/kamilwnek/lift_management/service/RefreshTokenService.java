@@ -20,7 +20,7 @@ public class RefreshTokenService {
     public RefreshToken createToken(User user, String device) {
         RefreshToken refreshToken = RefreshToken.builder()
                 .user(user)
-                .expiryDate(Instant.now().plusMillis(jwtConfig.getRefreshTokenExpiration()*1000))
+                .expiryDate(Instant.now().plusMillis(jwtConfig.getRefreshTokenExpiration()))
                 .token(UUID.randomUUID().toString())
                 .deviceName(device)
                 .build();

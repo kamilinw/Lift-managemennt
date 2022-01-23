@@ -4,8 +4,6 @@ import com.kamilwnek.lift_management.dto.*;
 import com.kamilwnek.lift_management.entity.RefreshToken;
 import com.kamilwnek.lift_management.entity.User;
 import com.kamilwnek.lift_management.exception.NoSuchRecordException;
-import com.kamilwnek.lift_management.mapper.CreateUserRequestMapper;
-import com.kamilwnek.lift_management.mapper.CreateUserResponseMapper;
 import com.kamilwnek.lift_management.mapper.UserMapper;
 import com.kamilwnek.lift_management.repository.UserRepository;
 import lombok.AllArgsConstructor;
@@ -25,8 +23,6 @@ public class UserService implements UserDetailsService {
 
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
-    private final CreateUserRequestMapper createUserRequestMapper;
-    private final CreateUserResponseMapper createUserResponseMapper;
     private final RefreshTokenService refreshTokenService;
     private final UserMapper userMapper;
 
@@ -42,9 +38,8 @@ public class UserService implements UserDetailsService {
         if (!request.getPassword().equals(request.getRepeatPassword())) {
             throw new ValidationException("Passwords don't match!");
         }
-        User user = userRepository.save(createUserRequestMapper.toEntity(request));
-
-        return createUserResponseMapper.toDto(user);
+        User user = userRepository.save(userMapper.toEntity(request));
+        return userMapper.toCreateUserResponse(user);
     }
 
     public LoginResponse loginUser(LoginRequest request, String device) {

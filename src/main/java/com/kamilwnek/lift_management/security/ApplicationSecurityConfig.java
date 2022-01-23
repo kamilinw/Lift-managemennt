@@ -46,7 +46,6 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/v*/api/user/register/**").permitAll()
                 .antMatchers("/v*/api/user/login/**").permitAll()
                 .antMatchers("/h2-console/**").permitAll()
-                //.antMatchers("/**").permitAll()
                 .anyRequest().authenticated();
     }
 
@@ -58,7 +57,6 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 )
         ).passwordEncoder(passwordEncoder);
     }
-
 
     @Override
     @Bean
