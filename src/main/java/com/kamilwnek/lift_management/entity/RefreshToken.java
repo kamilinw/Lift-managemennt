@@ -1,5 +1,6 @@
 package com.kamilwnek.lift_management.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
@@ -9,6 +10,7 @@ import java.time.Instant;
 @Data
 @Entity
 @Builder
+@AllArgsConstructor
 public class RefreshToken {
     @Id
     @SequenceGenerator(
@@ -36,4 +38,8 @@ public class RefreshToken {
     private Instant expiryDate;
 
     private String deviceName;
+
+    public RefreshToken(){
+
+    }
 }

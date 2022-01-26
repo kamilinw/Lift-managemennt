@@ -43,8 +43,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/","index","/css/*","/js/*").permitAll()
                 .antMatchers(HttpMethod.POST,"/v*/api/building/**").hasAuthority(EMPLOYEE_WRITE.getPermission())
-                .antMatchers("/v*/api/user/register/**").permitAll()
-                .antMatchers("/v*/api/user/login/**").permitAll()
+                .antMatchers("/v*/api/auth/**").permitAll()
                 .antMatchers("/h2-console/**").permitAll()
                 .anyRequest().authenticated();
     }
