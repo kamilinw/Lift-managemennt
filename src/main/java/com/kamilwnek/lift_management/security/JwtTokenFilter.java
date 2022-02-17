@@ -51,11 +51,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             return;
         }
 
-        Claims body = getBodyFromToken(token);
-        List<Map<String,String>> authorities = (List<Map<String,String>>) body.get(AUTHORITIES);
-        Set<SimpleGrantedAuthority> simpleGrantedAuthorities = mapAuthoritiesToSet(authorities);
-
-        authenticateUserWithAuthorities(body.getSubject(), simpleGrantedAuthorities);
+        authenticateUserWithAuthorities(token);
         filterChain.doFilter(request, response);
     }
 
@@ -82,9 +78,12 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 .collect(Collectors.toSet());
     }
 
-    private void authenticateUserWithAuthorities(String username, Set<SimpleGrantedAuthority> simpleGrantedAuthorities){
+    private void authenticateUserWithAuthorities(String token){
+        Claims body = getBodyFromToken(token);
+        List<Map<String,String>> authorities = (List<Map<String,String>>) body.get(AUTHORITIES);
+        Set<SimpleGrantedAuthority> simpleGrantedAuthorities = mapAuthoritiesToSet(authorities);
         Authentication authentication = new UsernamePasswordAuthenticationToken(
-                username,
+                body.getSubject(),
                 null,
                 simpleGrantedAuthorities
         );
