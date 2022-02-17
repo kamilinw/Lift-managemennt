@@ -30,6 +30,10 @@ public class JwtAccessTokenUtil {
                 .compact();
     }
 
+    public String getTokenFromHeader(String header){
+        return header.split(" ")[1].trim();
+    }
+
     public Long getUserId(String jwtToken){
         Jws<Claims> claims = Jwts.parserBuilder()
                 .setSigningKey(jwtSecretKey.secretKey())

@@ -2,7 +2,6 @@ package com.kamilwnek.lift_management.security;
 
 import com.kamilwnek.lift_management.exception.JwtTokenException;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
@@ -40,36 +39,55 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
 
-        // Get authorization header and validate
         final String header = request.getHeader(HttpHeaders.AUTHORIZATION);
-        if (isEmpty(header) || !header.startsWith(jwtConfig.getTokenPrefix())) {
+        if (!isHeaderCorrect(header)) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        final String token = header.split(" ")[1].trim();
+        final String token = jwtAccessTokenUtil.getTokenFromHeader(header);
+        if (!isTokenValid(token)){
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        Claims body = getBodyFromToken(token);
+        List<Map<String,String>> authorities = (List<Map<String,String>>) body.get(AUTHORITIES);
+        Set<SimpleGrantedAuthority> simpleGrantedAuthorities = mapAuthoritiesToSet(authorities);
+
+        authenticateUserWithAuthorities(body.getSubject(), simpleGrantedAuthorities);
+        filterChain.doFilter(request, response);
+    }
+
+    private boolean isHeaderCorrect(String header){
+        return isEmpty(header) || !header.startsWith(jwtConfig.getTokenPrefix());
+    }
+
+    private boolean isTokenValid(String token){
         try {
             jwtAccessTokenUtil.validate(token);
+            return true;
         } catch (JwtTokenException e){
-            filterChain.doFilter(request, response);
-            return;
+            return false;
         }
+    }
 
+    private Claims getBodyFromToken(String token){
+        return Jwts.parserBuilder().setSigningKey(jwtSecretKey.secretKey()).build().parseClaimsJws(token).getBody();
+    }
 
-        Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(jwtSecretKey.secretKey()).build().parseClaimsJws(token);
-        List<Map<String,String>> authoritiesList = (List<Map<String,String>>) claims.getBody().get(AUTHORITIES);
-
-        Set<SimpleGrantedAuthority> simpleGrantedAuthorities = authoritiesList.stream()
+    private Set<SimpleGrantedAuthority> mapAuthoritiesToSet(List<Map<String,String>> authorities){
+        return authorities.stream()
                 .map(m -> new SimpleGrantedAuthority(m.get(AUTHORITY)))
                 .collect(Collectors.toSet());
+    }
 
+    private void authenticateUserWithAuthorities(String username, Set<SimpleGrantedAuthority> simpleGrantedAuthorities){
         Authentication authentication = new UsernamePasswordAuthenticationToken(
-                claims.getBody().getSubject(),
+                username,
                 null,
                 simpleGrantedAuthorities
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        filterChain.doFilter(request, response);
     }
 }
