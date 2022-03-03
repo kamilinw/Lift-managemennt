@@ -1,20 +1,17 @@
 package com.kamilwnek.lift_management.validator;
 
-import com.kamilwnek.lift_management.entity.Lift;
-import com.kamilwnek.lift_management.service.LiftService;
+import com.kamilwnek.lift_management.repository.LiftRepository;
 import lombok.AllArgsConstructor;
-
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 @AllArgsConstructor
 public class UniqueSerialNumberValidator implements ConstraintValidator<UniqueSerialNumber, String> {
 
-    private final LiftService liftService;
+    private final LiftRepository liftRepository;
 
     @Override
     public boolean isValid(String serialNumber, ConstraintValidatorContext constraintValidatorContext) {
-        Lift lift = liftService.findLiftBySerialNumber(serialNumber);
-        return lift == null;
+        return liftRepository.isSerialNumberUnique(serialNumber);
     }
 }

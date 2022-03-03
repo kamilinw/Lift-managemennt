@@ -8,11 +8,25 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface LiftRepository extends JpaRepository<Lift, Long> {
 
-    @Query("SELECT l FROM Lift l " +
-            "WHERE l.udtNumber = ?1")
-    Lift findLiftByUdtNumber(String udtNumber);
+    @Query(
+            "SELECT " +
+                "CASE " +
+                    "WHEN COUNT(id) = 0 THEN TRUE " +
+                    "ELSE FALSE " +
+                "END " +
+            "FROM Lift l " +
+            "WHERE l.udtNumber = ?1"
+    )
+    Boolean isUdtNumberUnique(String udtNumber);
 
-    @Query("SELECT l FROM Lift l " +
-            "WHERE l.serialNumber = ?1")
-    Lift findLiftBySerialNumber(String serialNumber);
+    @Query(
+            "SELECT " +
+                "CASE " +
+                    "WHEN COUNT(id) = 0 THEN TRUE " +
+                    "ELSE FALSE " +
+                "END " +
+            "FROM Lift l " +
+            "WHERE l.serialNumber = ?1"
+    )
+    Boolean isSerialNumberUnique(String serialNumber);
 }
