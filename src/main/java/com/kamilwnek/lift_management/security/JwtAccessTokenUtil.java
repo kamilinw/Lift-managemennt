@@ -31,7 +31,7 @@ public class JwtAccessTokenUtil {
     }
 
     public String getTokenFromHeader(String header){
-        return header.split(" ")[1].trim();
+        return header != null ? header.split(" ")[1].trim() : "";
     }
 
     public Long getUserId(String jwtToken){

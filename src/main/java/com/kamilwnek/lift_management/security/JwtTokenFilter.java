@@ -56,7 +56,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     }
 
     private boolean isHeaderCorrect(String header){
-        return isEmpty(header) || !header.startsWith(jwtConfig.getTokenPrefix());
+        return !isEmpty(header) && header.startsWith(jwtConfig.getTokenPrefix());
     }
 
     private boolean isTokenValid(String token){
