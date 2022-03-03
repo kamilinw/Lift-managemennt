@@ -11,7 +11,7 @@ import javax.validation.Valid;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("v1/api/auth")
+@RequestMapping("api/v1/auth")
 public class AuthController {
     private final UserService userService;
     private final RefreshTokenService refreshTokenService;

@@ -13,7 +13,7 @@ import javax.validation.Valid;
 
 @AllArgsConstructor
 @RestController()
-@RequestMapping("v1/api/building")
+@RequestMapping("api/v1/building")
 public class BuildingController {
 
     private final BuildingService buildingService;
