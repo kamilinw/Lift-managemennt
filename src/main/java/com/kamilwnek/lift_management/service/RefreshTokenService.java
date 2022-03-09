@@ -21,9 +21,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class RefreshTokenService {
     private final RefreshTokenRepository refreshTokenRepository;
-    private final JwtConfig jwtConfig;
     private final JwtTokenUtil jwtTokenUtil;
-    private final UserRepository userRepository;
     private final Clock clock;
 
     public RefreshToken createToken(User user, String device) {
