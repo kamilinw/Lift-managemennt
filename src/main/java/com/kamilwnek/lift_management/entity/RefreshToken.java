@@ -3,9 +3,12 @@ package com.kamilwnek.lift_management.entity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Data
 @Entity
@@ -23,7 +26,6 @@ public class RefreshToken {
             generator = "refresh_token_seq"
     )
     private Long id;
-
     @ManyToOne(
             cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH},
             targetEntity = User.class
@@ -32,12 +34,13 @@ public class RefreshToken {
             name = "user_id"
     )
     private User user;
-
     private String token;
-
-    private Instant expiryDate;
-
+    private LocalDateTime expiryDate;
     private String deviceName;
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
     public RefreshToken(){
 

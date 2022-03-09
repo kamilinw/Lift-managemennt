@@ -16,7 +16,6 @@ class LiftRepositoryTest {
     private LiftRepository underTest;
     @Autowired
     private BuildingRepository buildingRepository;
-    private Building building;
     private String udtNumber;
     private String serialNumber;
 
@@ -27,15 +26,10 @@ class LiftRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        building = new Building("Szkoła", "Rzeszów", "Mickiewicza 12");
+        Building building = new Building("Szkoła", "Rzeszów", "Mickiewicza 12");
         buildingRepository.save(building);
         udtNumber = "248dfg337412a";
         serialNumber = "00:1B:44:11:3A:B7";
-    }
-
-    @Test
-    void isTheSameUdtNumberNotUnique() {
-        //given
         Lift lift = new Lift(
                 building,
                 serialNumber,
@@ -43,6 +37,10 @@ class LiftRepositoryTest {
                 "activationDate",
                 "comment");
         underTest.save(lift);
+    }
+
+    @Test
+    void isTheSameUdtNumberNotUnique() {
         //when
         Boolean actual = underTest.isUdtNumberUnique(udtNumber);
         //than
@@ -50,18 +48,26 @@ class LiftRepositoryTest {
     }
 
     @Test
+    void isNewUdtNumberUnique(){
+        //when
+        Boolean actual = underTest.isUdtNumberUnique("otherUdtNumber");
+        //than
+        assertThat(actual);
+    }
+
+    @Test
     void isTheSameSerialNumberNotUnique() {
-        //given
-        Lift lift = new Lift(
-                building,
-                serialNumber,
-                udtNumber,
-                "activationDate",
-                "comment");
-        underTest.save(lift);
         //when
         Boolean actual = underTest.isSerialNumberUnique(serialNumber);
         //than
         assertThat(!actual);
+    }
+
+    @Test
+    void isNewSerialNumberUnique(){
+        //when
+        Boolean actual = underTest.isSerialNumberUnique(serialNumber);
+        //then
+        assertThat(actual);
     }
 }

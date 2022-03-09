@@ -29,7 +29,7 @@ import static org.springframework.util.ObjectUtils.isEmpty;
 public class JwtTokenFilter extends OncePerRequestFilter {
     private final JwtConfig jwtConfig;
     private final JwtSecretKey jwtSecretKey;
-    private final JwtAccessTokenUtil jwtAccessTokenUtil;
+    private final JwtTokenUtil jwtTokenUtil;
     private static final String AUTHORITIES = "authorities";
     private static final String AUTHORITY = "authority";
 
@@ -45,7 +45,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             return;
         }
 
-        final String token = jwtAccessTokenUtil.getTokenFromHeader(header);
+        final String token = jwtTokenUtil.getTokenFromHttpAuthorizationHeader(header);
         if (!isTokenValid(token)){
             filterChain.doFilter(request, response);
             return;
@@ -61,7 +61,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     private boolean isTokenValid(String token){
         try {
-            jwtAccessTokenUtil.validate(token);
+            jwtTokenUtil.validate(token);
             return true;
         } catch (JwtTokenException e){
             return false;

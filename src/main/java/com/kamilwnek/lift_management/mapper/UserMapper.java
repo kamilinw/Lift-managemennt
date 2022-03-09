@@ -6,7 +6,7 @@ import com.kamilwnek.lift_management.dto.LoginResponse;
 import com.kamilwnek.lift_management.dto.UserDto;
 import com.kamilwnek.lift_management.entity.RefreshToken;
 import com.kamilwnek.lift_management.entity.User;
-import com.kamilwnek.lift_management.security.JwtAccessTokenUtil;
+import com.kamilwnek.lift_management.security.JwtTokenUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class UserMapper implements DtoMapper<User, UserDto> {
-    private final JwtAccessTokenUtil jwtAccessTokenUtil;
+    private final JwtTokenUtil jwtTokenUtil;
     private final PasswordEncoder passwordEncoder;
     @Override
     public User toEntity(UserDto dto) {
@@ -26,22 +26,22 @@ public class UserMapper implements DtoMapper<User, UserDto> {
         return new UserDto(
                 entity.getId(),
                 entity.getCreatedAt(),
-                entity.getModifiedAt(),
+                entity.getUpdatedAt(),
                 entity.getUsername(),
                 entity.getEmail(),
                 entity.getApplicationUserRole()
         );
     }
 
-    public LoginResponse toLoginResponse(User userDetails, RefreshToken refreshToken){
+    public LoginResponse toLoginResponse(User userDetails, RefreshToken refreshToken, String accessToken){
         return new LoginResponse(
                 userDetails.getId(),
                 userDetails.getCreatedAt(),
-                userDetails.getModifiedAt(),
+                userDetails.getUpdatedAt(),
                 userDetails.getUsername(),
                 userDetails.getEmail(),
                 userDetails.getApplicationUserRole(),
-                jwtAccessTokenUtil.createAccessToken(userDetails),
+                accessToken,
                 refreshToken.getToken(),
                 "Bearer"
         );

@@ -19,6 +19,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
+import java.time.Clock;
+
 import static com.kamilwnek.lift_management.enums.ApplicationUserPermission.EMPLOYEE_WRITE;
 
 @AllArgsConstructor

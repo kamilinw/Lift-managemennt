@@ -6,6 +6,7 @@ import com.kamilwnek.lift_management.entity.User;
 import com.kamilwnek.lift_management.exception.NoSuchRecordException;
 import com.kamilwnek.lift_management.mapper.UserMapper;
 import com.kamilwnek.lift_management.repository.UserRepository;
+import com.kamilwnek.lift_management.security.JwtTokenUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import javax.validation.ValidationException;
+import java.time.Clock;
 
 @Service
 @AllArgsConstructor
@@ -25,6 +27,8 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final RefreshTokenService refreshTokenService;
     private final UserMapper userMapper;
+    private final JwtTokenUtil jwtTokenUtil;
+    private final Clock clock;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -48,12 +52,12 @@ public class UserService implements UserDetailsService {
                 .authenticate(
                         new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
                 );
-
         SecurityContextHolder.getContext().setAuthentication(authentication);
+
         User userDetails = (User) authentication.getPrincipal();
         RefreshToken refreshToken = refreshTokenService.createToken(userDetails, device);
-
-        return userMapper.toLoginResponse(userDetails, refreshToken);
+        String accessToken = jwtTokenUtil.createAccessToken(userDetails, clock);
+        return userMapper.toLoginResponse(userDetails, refreshToken, accessToken);
     }
 
     public UserDto getUserById(Long id) {

@@ -16,8 +16,8 @@ public class JwtConfig {
 
     private String secretKey;
     private String tokenPrefix;
-    private Integer acceptTokenExpiration;
-    private Integer refreshTokenExpiration;
+    private Integer acceptTokenExpirationMinutes;
+    private Integer refreshTokenExpirationHours;
 
 
     public String getAuthorizationHeader(){

@@ -21,7 +21,7 @@ import static org.springframework.util.ObjectUtils.isEmpty;
 @RequiredArgsConstructor
 public class AuthEntryPointJwt implements AuthenticationEntryPoint {
 
-    private final JwtAccessTokenUtil jwtAccessTokenUtil;
+    private final JwtTokenUtil jwtTokenUtil;
 
     @Override
     public void commence(
@@ -50,7 +50,7 @@ public class AuthEntryPointJwt implements AuthenticationEntryPoint {
         if (!isEmpty(header) && header.startsWith("Bearer ")) {
             final String token = header.split(" ")[1].trim();
             try {
-                jwtAccessTokenUtil.validate(token);
+                jwtTokenUtil.validate(token);
             } catch (JwtTokenException e) {
                 return e.getMessage();
             }

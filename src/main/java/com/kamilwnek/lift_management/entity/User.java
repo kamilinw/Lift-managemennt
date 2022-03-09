@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.kamilwnek.lift_management.enums.ApplicationUserRole;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
@@ -31,34 +31,26 @@ public class User implements UserDetails, Serializable {
             generator = "user_seq"
     )
     private Long id;
-
-    @CreatedDate
-    private LocalDateTime createdAt;
-
-    @LastModifiedDate
-    private LocalDateTime modifiedAt;
-
     @NotNull
     private String username;
-
     @NotNull
     private String password;
-
     @NotNull
     private String email;
-
     @NotNull
     @Enumerated(EnumType.STRING)
     private ApplicationUserRole applicationUserRole;
-
     @NotNull
     private boolean isEnabled;
-
     @OneToMany(
             mappedBy = "user"
     )
     @JsonIgnore
     private Set<RefreshToken> refreshTokens;
+    @CreationTimestamp
+    private LocalDateTime createdAt;
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 
     public User(@NotNull String username, @NotNull String password, @NotNull String email) {
         this.username = username;

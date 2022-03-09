@@ -10,27 +10,35 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.time.Clock;
 import java.util.Date;
 
 @Component
 @RequiredArgsConstructor
-public class JwtAccessTokenUtil {
+public class JwtTokenUtil {
     private final JwtConfig jwtConfig;
     private final JwtSecretKey jwtSecretKey;
+    private final Logger logger = LoggerFactory.getLogger(JwtTokenUtil.class);
 
-    private final Logger logger = LoggerFactory.getLogger(JwtAccessTokenUtil.class);
-
-    public String createAccessToken(User user){
+    public String createAccessToken(User user, Clock clock){
         return Jwts.builder()
                 .setSubject(user.getId().toString())
                 .claim("authorities", user.getAuthorities())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis()+ Duration.ofMinutes(jwtConfig.getAcceptTokenExpiration()).toMillis()))
+                .setExpiration(
+                        new Date(clock.millis() + getExpirationOffset())
+                )
                 .signWith(jwtSecretKey.secretKey())
                 .compact();
     }
 
-    public String getTokenFromHeader(String header){
+    private long getExpirationOffset() {
+        return Duration.ofMinutes(jwtConfig.getAcceptTokenExpirationMinutes()).toMillis();
+    }
+
+    public String getTokenFromHttpAuthorizationHeader(String header){
         return header != null ? header.split(" ")[1].trim() : "";
     }
 
@@ -65,5 +73,9 @@ public class JwtAccessTokenUtil {
         } catch (IllegalArgumentException ex) {
             throw new JwtTokenException("JWT claims string is empty");
         }
+    }
+
+    public LocalDateTime createExpiryDate(Clock clock) {
+        return LocalDateTime.now(clock).plus(jwtConfig.getRefreshTokenExpirationHours(), ChronoUnit.HOURS);
     }
 }

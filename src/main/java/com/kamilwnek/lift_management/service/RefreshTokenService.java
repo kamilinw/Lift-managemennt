@@ -7,13 +7,14 @@ import com.kamilwnek.lift_management.entity.User;
 import com.kamilwnek.lift_management.exception.JwtTokenException;
 import com.kamilwnek.lift_management.repository.RefreshTokenRepository;
 import com.kamilwnek.lift_management.repository.UserRepository;
-import com.kamilwnek.lift_management.security.JwtAccessTokenUtil;
+import com.kamilwnek.lift_management.security.JwtTokenUtil;
 import com.kamilwnek.lift_management.security.JwtConfig;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
+import java.time.Clock;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -21,13 +22,14 @@ import java.util.UUID;
 public class RefreshTokenService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtConfig jwtConfig;
-    private final JwtAccessTokenUtil jwtAccessTokenUtil;
+    private final JwtTokenUtil jwtTokenUtil;
     private final UserRepository userRepository;
+    private final Clock clock;
 
     public RefreshToken createToken(User user, String device) {
         RefreshToken refreshToken = RefreshToken.builder()
                 .user(user)
-                .expiryDate(Instant.now().plusMillis(jwtConfig.getRefreshTokenExpiration()))
+                .expiryDate(jwtTokenUtil.createExpiryDate(clock))
                 .token(UUID.randomUUID().toString())
                 .deviceName(device)
                 .build();
@@ -42,7 +44,7 @@ public class RefreshTokenService {
                     User user = refreshToken.getUser();
                     refreshTokenRepository.delete(refreshToken);
                     return new RefreshTokenResponse(
-                            jwtAccessTokenUtil.createAccessToken(user),
+                            jwtTokenUtil.createAccessToken(user, clock),
                             createToken(user, device).getToken(),
                             "Bearer");
                 })
@@ -50,7 +52,7 @@ public class RefreshTokenService {
     }
 
     private RefreshToken verifyExpiration(RefreshToken refreshToken){
-        if (refreshToken.getExpiryDate().compareTo(Instant.now()) < 0){
+        if (refreshToken.getExpiryDate().compareTo(LocalDateTime.now(clock)) < 0){
             refreshTokenRepository.delete(refreshToken);
             throw new JwtTokenException("Refresh token was expired. Please make a new sign in request");
         }

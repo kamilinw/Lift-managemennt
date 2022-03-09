@@ -21,21 +21,21 @@ public class LiftService {
     private final LiftMapper liftMapper;
     private final BuildingMapper buildingMapper;
 
-    public LiftDto createLift(LiftDto liftRequest) {
-        Long buildingId = liftRequest.getBuildingDto().getId();
+    public LiftDto createLift(LiftDto liftDto) {
+        Long buildingId = liftDto.getBuildingDto().getId();
         if(buildingId == null){
-            Building building = buildingMapper.toEntity(liftRequest.getBuildingDto());
+            Building building = buildingMapper.toEntity(liftDto.getBuildingDto());
             Building savedBuilding = buildingRepository.save(building);
-            liftRequest.setBuildingDto(buildingMapper.toDto(savedBuilding));
+            liftDto.setBuildingDto(buildingMapper.toDto(savedBuilding));
         } else{
             Building building = buildingRepository
                     .findById(buildingId)
                     .orElseThrow(
                             ()-> new NoSuchRecordException(String.format("Building with id %d not found", buildingId))
                     );
-            liftRequest.setBuildingDto(buildingMapper.toDto(building));
+            liftDto.setBuildingDto(buildingMapper.toDto(building));
         }
-        Lift lift = liftRepository.save(liftMapper.toEntity(liftRequest));
+        Lift lift = liftRepository.save(liftMapper.toEntity(liftDto));
 
         return liftMapper.toDto(lift);
     }
