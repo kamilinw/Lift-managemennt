@@ -40,6 +40,16 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
                 ex, apiError, headers, apiError.getStatus(), request);
     }
 
+    @ExceptionHandler(value = ValidationException.class)
+    protected ResponseEntity<Object> handleValidationException(
+            RuntimeException ex, WebRequest request) {
+
+        ApiError apiError =
+                new ApiError(HttpStatus.BAD_REQUEST, "", ex.getMessage(), request.getContextPath());
+
+        return handleExceptionInternal(ex, apiError, new HttpHeaders(), apiError.getStatus(), request);
+    }
+
     @ExceptionHandler(value = NoSuchRecordException.class)
     protected ResponseEntity<Object> handleNoSuchRecordException(
             RuntimeException ex, WebRequest request) {
