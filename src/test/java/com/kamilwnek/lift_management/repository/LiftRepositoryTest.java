@@ -1,6 +1,5 @@
 package com.kamilwnek.lift_management.repository;
 
-import com.kamilwnek.lift_management.entity.Building;
 import com.kamilwnek.lift_management.entity.Lift;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,8 +15,8 @@ class LiftRepositoryTest {
     private LiftRepository underTest;
     @Autowired
     private BuildingRepository buildingRepository;
-    private String udtNumber;
-    private String serialNumber;
+    private final String udtNumber = "UDT number";
+    private final String serialNumber = "serial number";
 
     @AfterEach
     void tearDown() {
@@ -26,17 +25,10 @@ class LiftRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        Building building = new Building("Szkoła", "Rzeszów", "Mickiewicza 12");
-        buildingRepository.save(building);
-        udtNumber = "248dfg337412a";
-        serialNumber = "00:1B:44:11:3A:B7";
-        Lift lift = new Lift(
-                building,
-                serialNumber,
-                udtNumber,
-                "activationDate",
-                "comment");
-        underTest.save(lift);
+       Lift lift = new Lift();
+       lift.setUdtNumber(udtNumber);
+       lift.setSerialNumber(serialNumber);
+       underTest.save(lift);
     }
 
     @Test
