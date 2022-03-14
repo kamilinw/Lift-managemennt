@@ -52,7 +52,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(username -> userRepository.findByEmail(username)
+        auth.userDetailsService(username -> userRepository.findByUsername(username)
                 .orElseThrow(
                         () -> new UsernameNotFoundException(String.format("User %s, not found", username))
                 )

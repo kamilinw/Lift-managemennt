@@ -1,4 +1,4 @@
-package com.kamilwnek.lift_management.validator;
+package com.kamilwnek.lift_management.validator.udt_number;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -9,9 +9,9 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = UniqueEmailValidator.class)
-public @interface UniqueEmail {
-    String message() default "User with that Email already exists!";
+@Constraint(validatedBy = UniqueUdtNumberValidator.class)
+public @interface UniqueUdtNumber {
+    String message() default "This UDT number already exists!";
 
     Class<?>[] groups() default {};
 

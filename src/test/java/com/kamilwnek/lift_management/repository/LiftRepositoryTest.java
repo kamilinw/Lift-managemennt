@@ -13,8 +13,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 class LiftRepositoryTest {
     @Autowired
     private LiftRepository underTest;
-    @Autowired
-    private BuildingRepository buildingRepository;
     private final String udtNumber = "UDT number";
     private final String serialNumber = "serial number";
 
@@ -28,6 +26,7 @@ class LiftRepositoryTest {
        Lift lift = new Lift();
        lift.setUdtNumber(udtNumber);
        lift.setSerialNumber(serialNumber);
+       lift.setActivationDate("activation date");
        underTest.save(lift);
     }
 
@@ -36,7 +35,7 @@ class LiftRepositoryTest {
         //when
         Boolean actual = underTest.isUdtNumberUnique(udtNumber);
         //than
-        assertThat(!actual);
+        assertThat(actual).isFalse();
     }
 
     @Test
@@ -44,7 +43,7 @@ class LiftRepositoryTest {
         //when
         Boolean actual = underTest.isUdtNumberUnique("otherUdtNumber");
         //than
-        assertThat(actual);
+        assertThat(actual).isTrue();
     }
 
     @Test
@@ -52,14 +51,14 @@ class LiftRepositoryTest {
         //when
         Boolean actual = underTest.isSerialNumberUnique(serialNumber);
         //than
-        assertThat(!actual);
+        assertThat(actual).isFalse();
     }
 
     @Test
     void isNewSerialNumberUnique(){
         //when
-        Boolean actual = underTest.isSerialNumberUnique(serialNumber);
+        Boolean actual = underTest.isSerialNumberUnique("otherSerialNumber");
         //then
-        assertThat(actual);
+        assertThat(actual).isTrue();
     }
 }

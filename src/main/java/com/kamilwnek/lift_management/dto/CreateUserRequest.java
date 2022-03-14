@@ -1,6 +1,7 @@
 package com.kamilwnek.lift_management.dto;
 
-import com.kamilwnek.lift_management.validator.UniqueEmail;
+import com.kamilwnek.lift_management.validator.email.UniqueEmail;
+import com.kamilwnek.lift_management.validator.username.UniqueUsername;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -12,6 +13,7 @@ public class CreateUserRequest {
 
     @NotBlank
     @Size(min = 3, max = 30)
+    @UniqueUsername
     private String username;
 
     @NotBlank

@@ -32,7 +32,6 @@ class RefreshTokenServiceTest {
     private RefreshTokenService underTest;
     @Mock private RefreshTokenRepository refreshTokenRepository;
     @Mock private JwtTokenUtil jwtTokenUtil;
-    //@Mock private Clock clock;
     private Clock fixedClock;
 
     @BeforeEach

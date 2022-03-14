@@ -32,9 +32,9 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByEmail(username)
+        return userRepository.findByUsername(username)
                 .orElseThrow(
-                        ()->new NoSuchRecordException(String.format("User with email %s doesn't exist!", username))
+                        ()->new NoSuchRecordException(String.format("User with username %s doesn't exist!", username))
                 );
     }
 
@@ -50,7 +50,7 @@ public class UserService implements UserDetailsService {
         Authentication authentication;
         authentication = authenticationManager
                 .authenticate(
-                        new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
+                        new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
                 );
         SecurityContextHolder.getContext().setAuthentication(authentication);
 

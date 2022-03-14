@@ -1,4 +1,4 @@
-package com.kamilwnek.lift_management.validator;
+package com.kamilwnek.lift_management.validator.username;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -9,9 +9,9 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = UniqueSerialNumberValidator.class)
-public @interface UniqueSerialNumber {
-    String message() default "This serial number already exists!";
+@Constraint(validatedBy = UniqueUsernameValidator.class)
+public @interface UniqueUsername {
+    String message() default "User with that Username already exists!";
 
     Class<?>[] groups() default {};
 

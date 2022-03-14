@@ -1,4 +1,4 @@
-package com.kamilwnek.lift_management.validator;
+package com.kamilwnek.lift_management.validator.serial_number;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -9,9 +9,9 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = UniqueUdtNumberValidator.class)
-public @interface UniqueUdtNumber {
-    String message() default "This UDT number already exists!";
+@Constraint(validatedBy = UniqueSerialNumberValidator.class)
+public @interface UniqueSerialNumber {
+    String message() default "This serial number already exists!";
 
     Class<?>[] groups() default {};
 

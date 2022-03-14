@@ -1,7 +1,7 @@
 package com.kamilwnek.lift_management.dto;
 
-import com.kamilwnek.lift_management.validator.UniqueSerialNumber;
-import com.kamilwnek.lift_management.validator.UniqueUdtNumber;
+import com.kamilwnek.lift_management.validator.serial_number.UniqueSerialNumber;
+import com.kamilwnek.lift_management.validator.udt_number.UniqueUdtNumber;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

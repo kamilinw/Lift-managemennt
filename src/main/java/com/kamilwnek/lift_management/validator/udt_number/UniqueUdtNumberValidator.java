@@ -1,4 +1,4 @@
-package com.kamilwnek.lift_management.validator;
+package com.kamilwnek.lift_management.validator.udt_number;
 
 import com.kamilwnek.lift_management.repository.LiftRepository;
 import lombok.AllArgsConstructor;
