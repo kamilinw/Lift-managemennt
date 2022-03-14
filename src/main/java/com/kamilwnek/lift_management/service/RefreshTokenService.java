@@ -38,10 +38,11 @@ public class RefreshTokenService {
                 .map(this::verifyExpiration)
                 .map(refreshToken -> {
                     User user = refreshToken.getUser();
-                    refreshTokenRepository.delete(refreshToken);
+                    refreshToken.setToken(UUID.randomUUID().toString());
+                    refreshToken.setExpiryDate(jwtTokenUtil.createExpiryDate(clock));
                     return new RefreshTokenResponse(
                             jwtTokenUtil.createAccessToken(user, clock),
-                            createToken(user, device).getToken(),
+                            refreshToken.getToken(),
                             "Bearer");
                 })
                 .orElseThrow(()-> new JwtTokenException("Wrong Refresh Token!"));
