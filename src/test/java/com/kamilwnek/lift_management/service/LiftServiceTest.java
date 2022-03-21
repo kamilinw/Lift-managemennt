@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
@@ -38,6 +39,7 @@ class LiftServiceTest {
 
     @BeforeEach
     void setUp() {
+        MockitoAnnotations.openMocks(this);
         underTest = new LiftService(
                 liftRepository,
                 buildingRepository,
@@ -80,8 +82,8 @@ class LiftServiceTest {
         liftDto.getBuildingDto().setCity(null);
         Building building = new Building();
         building.setId(1L);
+        given(buildingRepository.findById(building.getId())).willReturn(Optional.of(building));
         //when
-        when(buildingRepository.findById(building.getId())).thenReturn(Optional.of(building));
         underTest.createLift(liftDto);
 
         //then
@@ -152,11 +154,11 @@ class LiftServiceTest {
         //given
         Lift lift = new Lift();
         lift.setId(57L);
+        given(liftRepository.findById(lift.getId())).willReturn(Optional.of(lift));
         //when
-        when(liftRepository.findById(lift.getId())).thenReturn(Optional.of(lift));
+        Lift actual = underTest.getLiftById(lift.getId());
         //then
-        Lift expected = underTest.getLiftById(lift.getId());
-        assertThat(expected).isSameAs(lift);
+        assertThat(actual).isSameAs(lift);
         verify(liftRepository).findById(lift.getId());
     }
 

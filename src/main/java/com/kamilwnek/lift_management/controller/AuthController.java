@@ -5,6 +5,7 @@ import com.kamilwnek.lift_management.dto.*;
 import com.kamilwnek.lift_management.service.RefreshTokenService;
 import com.kamilwnek.lift_management.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -22,7 +23,8 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public CreateUserResponse register(@RequestBody @Valid CreateUserRequest request){
+    @ResponseStatus(HttpStatus.CREATED)
+    public UserDto register(@RequestBody @Valid CreateUserRequest request){
         return userService.create(request);
     }
 

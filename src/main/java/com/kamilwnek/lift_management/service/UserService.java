@@ -38,12 +38,12 @@ public class UserService implements UserDetailsService {
                 );
     }
 
-    public CreateUserResponse create(CreateUserRequest request) {
+    public UserDto create(CreateUserRequest request) {
         if (!request.getPassword().equals(request.getRepeatPassword())) {
             throw new ValidationException("Passwords don't match!");
         }
         User user = userRepository.save(userMapper.toEntity(request));
-        return userMapper.toCreateUserResponse(user);
+        return userMapper.toDto(user);
     }
 
     public LoginResponse loginUser(LoginRequest request, String device) {

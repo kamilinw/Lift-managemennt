@@ -4,6 +4,7 @@ import com.kamilwnek.lift_management.dto.LiftDto;
 import com.kamilwnek.lift_management.entity.Lift;
 import com.kamilwnek.lift_management.service.LiftService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
@@ -14,7 +15,8 @@ public class LiftController {
     private final LiftService liftService;
 
     @PostMapping(value = "/add")
-    public LiftDto createLift(@RequestBody @Valid LiftDto liftRequest){
+    @ResponseStatus(HttpStatus.CREATED)
+    public Lift createLift(@RequestBody @Valid LiftDto liftRequest){
             return liftService.createLift(liftRequest);
     }
 

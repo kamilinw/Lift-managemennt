@@ -24,7 +24,7 @@ public class LiftService {
     private final LiftMapper liftMapper;
     private final BuildingMapper buildingMapper;
 
-    public LiftDto createLift(LiftDto liftDto) {
+    public Lift createLift(LiftDto liftDto) {
         BuildingDto buildingDto = liftDto.getBuildingDto();
 
         if(checkIfBuildingIdIsNull(buildingDto)){
@@ -38,9 +38,7 @@ public class LiftService {
                     );
             liftDto.setBuildingDto(buildingMapper.toDto(building));
         }
-        Lift lift = liftRepository.save(liftMapper.toEntity(liftDto));
-
-        return liftMapper.toDto(lift);
+        return liftRepository.save(liftMapper.toEntity(liftDto));
     }
 
     private boolean checkIfBuildingIdIsNull(BuildingDto buildingDto) {

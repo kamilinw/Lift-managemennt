@@ -12,13 +12,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.Clock;
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -36,6 +37,7 @@ class RefreshTokenServiceTest {
 
     @BeforeEach
     void setUp() {
+        MockitoAnnotations.openMocks(this);
         fixedClock = Clock.fixed(Instant.now(), ZoneId.systemDefault());
         underTest = new RefreshTokenService(refreshTokenRepository, jwtTokenUtil, fixedClock);
     }
@@ -64,15 +66,15 @@ class RefreshTokenServiceTest {
         String token = "token";
         RefreshToken refreshToken = RefreshToken.builder()
                 .user(user)
-                .expiryDate(LocalDateTime.now(fixedClock).plus(2, ChronoUnit.HOURS))
+                .expiryDate(LocalDateTime.now(Clock.offset(fixedClock, Duration.ofHours(2))))
                 .token(token)
                 .deviceName(deviceName)
                 .build();
         RefreshTokenRequest refreshTokenRequest = new RefreshTokenRequest();
         refreshTokenRequest.setRefreshToken(token);
+        given(refreshTokenRepository.findByTokenAndDeviceName(token, deviceName))
+                .willReturn(Optional.of(refreshToken));
         //when
-        when(refreshTokenRepository.findByTokenAndDeviceName(token, deviceName))
-                .thenReturn(Optional.of(refreshToken));
         RefreshTokenResponse actualRefreshTokenResponse = underTest.refreshToken(refreshTokenRequest, deviceName);
         //then
 
@@ -104,7 +106,7 @@ class RefreshTokenServiceTest {
         String token = "token";
         RefreshToken refreshToken = RefreshToken.builder()
                 .user(user)
-                .expiryDate(LocalDateTime.now(fixedClock).minus(2, ChronoUnit.HOURS))
+                .expiryDate(LocalDateTime.now(Clock.offset(fixedClock, Duration.ofHours(-2))))
                 .token(token)
                 .deviceName(deviceName)
                 .build();

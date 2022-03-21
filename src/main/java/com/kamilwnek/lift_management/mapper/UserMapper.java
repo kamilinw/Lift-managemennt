@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class UserMapper implements DtoMapper<User, UserDto> {
-    private final JwtTokenUtil jwtTokenUtil;
     private final PasswordEncoder passwordEncoder;
     @Override
     public User toEntity(UserDto dto) {
@@ -35,12 +34,7 @@ public class UserMapper implements DtoMapper<User, UserDto> {
 
     public LoginResponse toLoginResponse(User userDetails, RefreshToken refreshToken, String accessToken){
         return new LoginResponse(
-                userDetails.getId(),
-                userDetails.getCreatedAt(),
-                userDetails.getUpdatedAt(),
-                userDetails.getUsername(),
-                userDetails.getEmail(),
-                userDetails.getApplicationUserRole(),
+                toDto(userDetails),
                 accessToken,
                 refreshToken.getToken(),
                 "Bearer"
@@ -52,14 +46,6 @@ public class UserMapper implements DtoMapper<User, UserDto> {
                 request.getUsername(),
                 passwordEncoder.encode(request.getPassword()),
                 request.getEmail()
-        );
-    }
-
-    public CreateUserResponse toCreateUserResponse(User user){
-        return new CreateUserResponse(
-                user.getId(),
-                user.getUsername(),
-                user.getEmail()
         );
     }
 }

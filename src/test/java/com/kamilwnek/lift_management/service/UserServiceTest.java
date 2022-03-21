@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -39,18 +40,19 @@ class UserServiceTest {
     @Mock private RefreshTokenService refreshTokenService;
     @Mock private UserMapper userMapper;
     @Mock private JwtTokenUtil jwtTokenUtil;
-    private Clock clock;
+    private Clock fixedClock;
 
     @BeforeEach
     void setUp(){
-        clock = Clock.fixed(Instant.now(), ZoneId.systemDefault());
+        MockitoAnnotations.openMocks(this);
+        fixedClock = Clock.fixed(Instant.now(), ZoneId.systemDefault());
         underTest = new UserService(
                 authenticationManager,
                 userRepository,
                 refreshTokenService,
                 userMapper,
                 jwtTokenUtil,
-                clock);
+                fixedClock);
     }
 
     @Test
@@ -58,8 +60,8 @@ class UserServiceTest {
         //given
         String username = "username";
         User user = new User();
+        given(userRepository.findByUsername(username)).willReturn(Optional.of(user));
         //when
-        when(userRepository.findByUsername(username)).thenReturn(Optional.of(user));
         underTest.loadUserByUsername(username);
         //then
         ArgumentCaptor<String> usernameArgumentCaptor = ArgumentCaptor.forClass(String.class);
@@ -137,17 +139,17 @@ class UserServiceTest {
         user.setPassword(password);
         user.setApplicationUserRole(ApplicationUserRole.EMPLOYEE);
         user.setEnabled(true);
-
-        //when
-        when(authenticationManager.authenticate(any()))
-                .thenReturn(
+        given(authenticationManager.authenticate(any()))
+                .willReturn(
                         new UsernamePasswordAuthenticationToken(
                                 user,
                                 user.getPassword(),
                                 user.getAuthorities())
                 );
-        when(jwtTokenUtil.createAccessToken(user, clock)).thenReturn(accessToken);
-        when(refreshTokenService.createToken(user, deviceName)).thenReturn(refreshToken);
+        given(jwtTokenUtil.createAccessToken(user, fixedClock)).willReturn(accessToken);
+        given(refreshTokenService.createToken(user, deviceName)).willReturn(refreshToken);
+
+        //when
         underTest.loginUser(loginRequest, deviceName);
 
         //then
@@ -193,8 +195,8 @@ class UserServiceTest {
     void canGetUserById(){
         //given
         Long id = 1L;
+        given(userRepository.findById(anyLong())).willReturn(Optional.of(new User()));
         //when
-        when(userRepository.findById(anyLong())).thenReturn(Optional.of(new User()));
         underTest.getUserById(id);
         //then
         ArgumentCaptor<Long> userIdArgumentCaptor = ArgumentCaptor.forClass(Long.class);
