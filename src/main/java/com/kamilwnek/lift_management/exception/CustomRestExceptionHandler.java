@@ -65,7 +65,7 @@ public class CustomRestExceptionHandler extends ResponseEntityExceptionHandler {
             RuntimeException ex, WebRequest request) {
 
         ApiError apiError =
-                new ApiError(HttpStatus.FORBIDDEN, "", ex.getMessage(), request.getContextPath());
+                new ApiError(HttpStatus.UNAUTHORIZED, "", ex.getMessage(), request.getContextPath());
 
         return handleExceptionInternal(ex, apiError, new HttpHeaders(), apiError.getStatus(), request);
     }

@@ -3,7 +3,6 @@ package com.kamilwnek.lift_management.exception;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -14,7 +13,6 @@ public class ApiError {
     private final String message;
     private final List<String> errors;
     private final String path;
-
 
     public ApiError(HttpStatus status, String message, String error, String path) {
         super();
