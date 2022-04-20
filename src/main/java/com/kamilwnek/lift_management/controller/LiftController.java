@@ -14,7 +14,7 @@ import javax.validation.Valid;
 public class LiftController {
     private final LiftService liftService;
 
-    @PostMapping(value = "/add")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Lift createLift(@RequestBody @Valid LiftDto liftRequest){
             return liftService.createLift(liftRequest);

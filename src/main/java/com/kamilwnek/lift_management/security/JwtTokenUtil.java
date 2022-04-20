@@ -42,7 +42,7 @@ public class JwtTokenUtil {
         return header != null ? header.split(" ")[1].trim() : "";
     }
 
-    public Long getUserId(String jwtToken){
+    public Long getUserIdFromToken(String jwtToken){
         Jws<Claims> claims = Jwts.parserBuilder()
                 .setSigningKey(jwtSecretKey.secretKey())
                 .build()

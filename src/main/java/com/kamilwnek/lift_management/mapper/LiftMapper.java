@@ -18,7 +18,6 @@ public class LiftMapper implements DtoMapper<Lift, LiftDto> {
     @Override
     public Lift toEntity(LiftDto dto) {
         return new Lift(
-                //dto.getId(),
                 buildingMapper.toEntity(dto.getBuildingDto()),
                 dto.getSerialNumber(),
                 dto.getUdtNumber(),

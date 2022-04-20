@@ -13,8 +13,6 @@ import com.kamilwnek.lift_management.repository.LiftRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @AllArgsConstructor
 @Service
 public class LiftService {
@@ -64,10 +62,8 @@ public class LiftService {
     }
 
     public Lift getLiftById(Long id) {
-        Optional<Lift> liftOptional = liftRepository.findById(id);
-        if (liftOptional.isPresent())
-            return liftOptional.get();
-        else
-            throw new NoSuchRecordException(String.format("Lift with id %d not found", id));
+        return liftRepository.findById(id).orElseThrow(
+                () -> new NoSuchRecordException(String.format("Lift with id %d not found", id))
+        );
     }
 }
