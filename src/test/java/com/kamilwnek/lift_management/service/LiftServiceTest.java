@@ -19,10 +19,10 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
@@ -46,7 +46,7 @@ class LiftServiceTest {
                 liftMapper,
                 buildingMapper);
         buildingDto = new BuildingDto(
-                1L,
+                UUID.randomUUID().toString(),
                 "name",
                 "city",
                 "address"
@@ -81,7 +81,7 @@ class LiftServiceTest {
         liftDto.getBuildingDto().setAddress(null);
         liftDto.getBuildingDto().setCity(null);
         Building building = new Building();
-        building.setId(1L);
+        building.setId(UUID.fromString(liftDto.getBuildingDto().getId()));
         given(buildingRepository.findById(building.getId())).willReturn(Optional.of(building));
         //when
         underTest.createLift(liftDto);
@@ -99,7 +99,7 @@ class LiftServiceTest {
         liftDto.getBuildingDto().setName(null);
         liftDto.getBuildingDto().setAddress(null);
         liftDto.getBuildingDto().setCity(null);
-        given(buildingRepository.findById(anyLong())).willReturn(Optional.empty());
+        given(buildingRepository.findById(any(UUID.class))).willReturn(Optional.empty());
         //when
         //then
         assertThatThrownBy(() -> underTest.createLift(liftDto))
@@ -153,10 +153,10 @@ class LiftServiceTest {
     void canGetLiftById() {
         //given
         Lift lift = new Lift();
-        lift.setId(57L);
+        lift.setId(UUID.randomUUID());
         given(liftRepository.findById(lift.getId())).willReturn(Optional.of(lift));
         //when
-        Lift actual = underTest.getLiftById(lift.getId());
+        Lift actual = underTest.getLiftById(lift.getId().toString());
         //then
         assertThat(actual).isSameAs(lift);
         verify(liftRepository).findById(lift.getId());
@@ -165,10 +165,11 @@ class LiftServiceTest {
     @Test
     void willThrowWhenLiftDoesNotExist(){
         //given
-        given(liftRepository.findById(anyLong())).willReturn(Optional.empty());
+        UUID id = UUID.randomUUID();
+        given(liftRepository.findById(any(UUID.class))).willReturn(Optional.empty());
         //when
         //then
-        assertThatThrownBy(() -> underTest.getLiftById(anyLong()))
+        assertThatThrownBy(() -> underTest.getLiftById(id.toString()))
                 .isInstanceOf(NoSuchRecordException.class)
                 .hasMessageContaining("Lift with id");
     }

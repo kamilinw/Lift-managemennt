@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 public class BuildingDto {
 
     @Id
-    private Long id;
+    private String id;
     @NotNull
     private String name;
     @NotNull

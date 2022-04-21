@@ -23,6 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 import java.time.Clock;
+import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -70,7 +71,7 @@ class AuthControllerTest {
                 .build();
 
         user = new User("username", "password", "test@email.com");
-        user.setId(1L);
+        user.setId(UUID.randomUUID());
         token = "Bearer " + jwtTokenUtil.createAccessToken(user, clock);
     }
 

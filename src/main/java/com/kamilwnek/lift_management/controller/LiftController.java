@@ -21,7 +21,7 @@ public class LiftController {
     }
 
     @GetMapping(value = "/{id}")
-    public Lift getLiftById(@PathVariable(name = "id") Long id){
+    public Lift getLiftById(@PathVariable(name = "id") String id){
         return liftService.getLiftById(id);
     }
 }

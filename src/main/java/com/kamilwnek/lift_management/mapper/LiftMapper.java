@@ -29,7 +29,7 @@ public class LiftMapper implements DtoMapper<Lift, LiftDto> {
     @Override
     public LiftDto toDto(Lift entity) {
         return new LiftDto(
-                entity.getId(),
+                entity.getId().toString(),
                 buildingMapper.toDto(entity.getBuilding()),
                 entity.getSerialNumber(),
                 entity.getUdtNumber(),

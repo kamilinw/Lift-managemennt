@@ -18,6 +18,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import javax.validation.ValidationException;
 import java.time.Clock;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -60,9 +61,10 @@ public class UserService implements UserDetailsService {
         return userMapper.toLoginResponse(userDetails, refreshToken, accessToken);
     }
 
-    public UserDto getUserById(Long id) {
+    public UserDto getUserById(String idString) {
+        UUID id = UUID.fromString(idString);
         User user = userRepository.findById(id).orElseThrow(
-                () -> new NoSuchRecordException(String.format("User with id %s not found!", id))
+                () -> new NoSuchRecordException(String.format("User with id %s not found!", idString))
         );
         return userMapper.toDto(user);
     }

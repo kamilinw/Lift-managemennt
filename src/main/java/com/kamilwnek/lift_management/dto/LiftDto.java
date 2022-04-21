@@ -17,7 +17,7 @@ import javax.validation.constraints.NotNull;
 public class LiftDto {
 
     @Id
-    private Long id;
+    private String id;
     @NotNull
     private BuildingDto buildingDto;
     @NotNull

@@ -12,6 +12,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.UUID;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
 
@@ -31,7 +33,7 @@ class BuildingServiceTest {
     @Test
     void canCreateNewBuilding() {
         //given
-        BuildingDto buildingDto = new BuildingDto(1L, "building name", "City", "building address");
+        BuildingDto buildingDto = new BuildingDto(UUID.randomUUID().toString(), "building name", "City", "building address");
         // when
         underTest.createBuilding(buildingDto);
         //then

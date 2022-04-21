@@ -13,6 +13,8 @@ import com.kamilwnek.lift_management.repository.LiftRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @AllArgsConstructor
 @Service
 public class LiftService {
@@ -30,9 +32,9 @@ public class LiftService {
             liftDto.setBuildingDto(buildingMapper.toDto(createdBuilding));
         } else{
             Building building = buildingRepository
-                    .findById(buildingDto.getId())
+                    .findById(UUID.fromString(buildingDto.getId()))
                     .orElseThrow(
-                            ()-> new NoSuchRecordException(String.format("Building with id %d not found", buildingDto.getId()))
+                            ()-> new NoSuchRecordException(String.format("Building with id %s not found", buildingDto.getId()))
                     );
             liftDto.setBuildingDto(buildingMapper.toDto(building));
         }
@@ -61,9 +63,10 @@ public class LiftService {
         return buildingRepository.save(building);
     }
 
-    public Lift getLiftById(Long id) {
+    public Lift getLiftById(String idString) {
+        UUID id = UUID.fromString(idString);
         return liftRepository.findById(id).orElseThrow(
-                () -> new NoSuchRecordException(String.format("Lift with id %d not found", id))
+                () -> new NoSuchRecordException(String.format("Lift with id %s not found", idString))
         );
     }
 }

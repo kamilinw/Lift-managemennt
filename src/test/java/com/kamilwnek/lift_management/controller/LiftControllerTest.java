@@ -24,9 +24,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.time.Clock;
+import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -68,15 +68,16 @@ class LiftControllerTest {
                 .build();
 
         User user = new User("username", "password", "test@email.com");
-        user.setId(1L);
+        user.setId(UUID.randomUUID());
         token = "Bearer " + jwtTokenUtil.createAccessToken(user, clock);
     }
 
     @Test
     void createLift_validBody_statusCreated() throws Exception{
-        BuildingDto buildingDto = new BuildingDto(1L, "Building name", "City", "address");
+        String buildingId = UUID.randomUUID().toString();
+        BuildingDto buildingDto = new BuildingDto(buildingId, "Building name", "City", "address");
         LiftDto liftDto = new LiftDto(
-                1L,
+                UUID.randomUUID().toString(),
                 buildingDto,
                 "Serial Number",
                 "Udt Number",
@@ -95,16 +96,17 @@ class LiftControllerTest {
 
     @Test
     void createLift_nonexistentBuilding_statusNotFound() throws Exception{
-        BuildingDto buildingDto = new BuildingDto(1L, null, null, null);
+        String buildingId = UUID.randomUUID().toString();
+        BuildingDto buildingDto = new BuildingDto(buildingId, null, null, null);
         LiftDto liftDto = new LiftDto(
-                1L,
+                UUID.randomUUID().toString(),
                 buildingDto,
                 "Serial Number",
                 "Udt Number",
                 "Activation date",
                 "Comment"
         );
-        given(liftService.createLift(any())).willThrow(new NoSuchRecordException("Building with id 1 not found"));
+        given(liftService.createLift(any())).willThrow(new NoSuchRecordException("Building with id " + buildingId + " not found"));
 
         mockMvc.perform(
                 post("/api/v1/lift")
@@ -117,10 +119,10 @@ class LiftControllerTest {
 
     @Test
     void getLiftById_validId_statusOk() throws Exception{
-        given(liftService.getLiftById(anyLong())).willReturn(new Lift());
+        given(liftService.getLiftById(any())).willReturn(new Lift());
 
         mockMvc.perform(
-                get("/api/v1/lift/{id}", 1L)
+                get("/api/v1/lift/{id}", UUID.randomUUID().toString())
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(HttpHeaders.AUTHORIZATION, token))
                 .andExpect(status().isOk());
@@ -128,10 +130,11 @@ class LiftControllerTest {
 
     @Test
     void getLiftById_invalidId_statusNotFound() throws Exception{
-        given(liftService.getLiftById(anyLong())).willThrow(new NoSuchRecordException("Lift with id 2 not found"));
+        UUID id = UUID.randomUUID();
+        given(liftService.getLiftById(any())).willThrow(new NoSuchRecordException("Lift with id " + id.toString() + " not found"));
 
         mockMvc.perform(
-                get("/api/v1/lift/{id}", 1L)
+                get("/api/v1/lift/{id}", id.toString())
                         .contentType(MediaType.APPLICATION_JSON)
                         .header(HttpHeaders.AUTHORIZATION, token))
                 .andExpect(status().isNotFound());

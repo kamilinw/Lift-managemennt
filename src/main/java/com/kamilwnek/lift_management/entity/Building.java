@@ -6,11 +6,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Set;
+import java.util.UUID;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,14 +22,13 @@ import java.util.Set;
 public class Building {
 
     @Id
-    @SequenceGenerator(
-            name = "object_seq",
-            sequenceName = "object_seq",
-            allocationSize = 1)
-    @GeneratedValue(
-            generator = "object_seq",
-            strategy = GenerationType.SEQUENCE)
-    private Long id;
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
+    @Column(name = "id", updatable = false, nullable = false)
+    private UUID id;
     private String name;
     private String city;
     private String address;
@@ -41,7 +42,7 @@ public class Building {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    public Building(Long id, String name, String city, String address) {
+    public Building(UUID id, String name, String city, String address) {
         this.id = id;
         this.name = name;
         this.city = city;

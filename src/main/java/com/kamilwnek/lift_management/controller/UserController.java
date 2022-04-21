@@ -17,7 +17,7 @@ public class UserController {
 
     @GetMapping
     public UserDto getUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String header){
-        Long id = jwtTokenUtil.getUserIdFromToken(jwtTokenUtil.getTokenFromHttpAuthorizationHeader(header));
+        String id = jwtTokenUtil.getUserIdFromToken(jwtTokenUtil.getTokenFromHttpAuthorizationHeader(header));
         return userService.getUserById(id);
     }
 }

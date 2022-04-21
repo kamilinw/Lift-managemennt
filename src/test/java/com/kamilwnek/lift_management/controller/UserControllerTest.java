@@ -23,9 +23,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.time.Clock;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -67,14 +68,14 @@ class UserControllerTest {
                 .build();
 
         user = new User("username", "password", "test@email.com");
-        user.setId(1L);
+        user.setId(UUID.randomUUID());
         token = "Bearer " + jwtTokenUtil.createAccessToken(user, clock);
     }
 
     @Test
     void getUser_validToken_statusOk() throws Exception{
         UserDto userDto = userMapper.toDto(user);
-        given(userService.getUserById(anyLong())).willReturn(userDto);
+        given(userService.getUserById(any())).willReturn(userDto);
 
         MvcResult mvcResult = mockMvc.perform(
                 get("/api/v1/user")
@@ -90,7 +91,7 @@ class UserControllerTest {
 
     @Test
     void getUser_invalidUser_statusNotFound() throws Exception{
-        given(userService.getUserById(anyLong())).willThrow(new NoSuchRecordException("User with id %s not found!"));
+        given(userService.getUserById(any())).willThrow(new NoSuchRecordException("User with id %s not found!"));
 
         mockMvc.perform(
                 get("/api/v1/user")

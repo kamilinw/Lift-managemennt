@@ -42,12 +42,12 @@ public class JwtTokenUtil {
         return header != null ? header.split(" ")[1].trim() : "";
     }
 
-    public Long getUserIdFromToken(String jwtToken){
+    public String getUserIdFromToken(String jwtToken){
         Jws<Claims> claims = Jwts.parserBuilder()
                 .setSigningKey(jwtSecretKey.secretKey())
                 .build()
                 .parseClaimsJws(jwtToken);
-        return Long.parseLong(claims.getBody().getSubject());
+        return claims.getBody().getSubject();
     }
 
     public Date getExpirationDate(String jwtToken){

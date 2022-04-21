@@ -25,6 +25,7 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -194,14 +195,14 @@ class UserServiceTest {
     @Test
     void canGetUserById(){
         //given
-        Long id = 1L;
-        given(userRepository.findById(anyLong())).willReturn(Optional.of(new User()));
+        UUID id = UUID.randomUUID();
+        given(userRepository.findById(any())).willReturn(Optional.of(new User()));
         //when
-        underTest.getUserById(id);
+        underTest.getUserById(id.toString());
         //then
-        ArgumentCaptor<Long> userIdArgumentCaptor = ArgumentCaptor.forClass(Long.class);
+        ArgumentCaptor<UUID> userIdArgumentCaptor = ArgumentCaptor.forClass(UUID.class);
         verify(userRepository).findById(userIdArgumentCaptor.capture());
-        Long actualId = userIdArgumentCaptor.getValue();
+        UUID actualId = userIdArgumentCaptor.getValue();
 
         assertThat(actualId).isEqualTo(id);
     }
@@ -209,11 +210,11 @@ class UserServiceTest {
     @Test
     void willThrowExceptionWhenUserWithGivenIdNotFound(){
         //given
-        Long id = 1L;
-        given(userRepository.findById(anyLong())).willReturn(Optional.empty());
+        UUID id = UUID.randomUUID();
+        given(userRepository.findById(any())).willReturn(Optional.empty());
         //when
         //then
-        assertThatThrownBy(() -> underTest.getUserById(id))
+        assertThatThrownBy(() -> underTest.getUserById(id.toString()))
                 .isInstanceOf(NoSuchRecordException.class)
                 .hasMessageContaining("User with id")
                 .hasMessageContaining("not found!");

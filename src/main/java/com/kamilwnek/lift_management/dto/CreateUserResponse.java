@@ -7,7 +7,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class CreateUserResponse {
 
-    private Long id;
+    private String id;
     private String username;
     private String email;
 }
